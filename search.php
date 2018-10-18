@@ -1,22 +1,17 @@
 <?php 
 
-include 'crawler-class.php';
+if( $_POST && !empty($_POST['url']) ){
 
-if( $_POST && !empty($_POST['item-id']) ){
-
-
-	$item_ids = explode(',', $_POST['item-id']);
-
-	foreach ($item_ids as $item_id) {
-		$ali = new aliCrawler($item_id);
-		$ali->getImages();
-		$result = $ali->saveImages();
-	}
-
+	$content = file_get_contents($_POST['url']);
+	preg_match_all('/qrdata="[0-9].*?[|]([0-9]{11})/', $content, $images);
+	$result = $images[1];
 
 }
 
+
+
 ?>
+
 
 
 <!doctype html>
@@ -36,21 +31,20 @@ if( $_POST && !empty($_POST['item-id']) ){
 		<div class="row justify-content-center">
 			<div class="col-5">
 
+				
+
 				<?php if (@$result): ?>
-					<div class="alert alert-info mb-3" role="alert">
-						<?php echo $result; ?>
-					</div>
+					<textarea class="form-control mb-3" cols="30" rows="10"><?php echo implode(',', $result); ?></textarea>
 				<?php endif ?>
 
 
 				<form method="post" action="">
 				  
 				  <div class="form-group">
-				    <label for="exampleInputEmail1">Item ID</label>
-				    <input type="text" name="item-id" class="form-control">
+				    <label for="exampleInputEmail1">Link</label>
+				    <input type="text" name="url" class="form-control">
 				  </div>
-				  <button type="submit" class="btn btn-primary">Pobierz</button>
-				  <a target="_blank" href="search.php" class="btn btn-info">Szukaj</a>
+				  <button type="submit" class="btn btn-primary">Szukaj</button>
 			
 				</form>
 
